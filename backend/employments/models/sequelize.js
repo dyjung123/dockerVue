@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 
 const skima = new Sequelize({
     dialect: 'sqlite',
-    storage: './db-dev.sqlite',
+    storage: './data/db-dev.sqlite',
     operatorsAliases: Sequelize.Op,
     logging: console.log
 });

@@ -3,6 +3,8 @@ version: '3'
 services:
   express:
     build: ./backend
+    volumes:
+      - ./backend/employments/data:/usr/src/app/data
   web:
     build: ./frontend
     ports:
