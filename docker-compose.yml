@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  express:
+    build: ./backend
+  web:
+    build: ./frontend
+    ports:
+    - "8080:80"
+    links:
+      - "express:express"
+    volumes:
+      - ./frontend/config:/etc/nginx/conf.d
+      - ./frontend/employments:/usr/share/nginx/html
