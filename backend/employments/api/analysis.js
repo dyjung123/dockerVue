@@ -1,7 +1,6 @@
 const models = require('../models/emotionData')
 const seque = require('sequelize')
 
-
 const addData = async (req, res, next) => {
     // console.log(req.body)
     const {imageName,userId,uploadDate,downloadURL,Confidence,HAPPY,CALM,SAD,
@@ -58,10 +57,19 @@ const findRecord = async (req,res,next) => {
 
 const getImage = async (req,res,next) => {
     console.log('getImage', req.body)
-    const {uid} = req.body
+    const {uid, category, limit, offset} = req.body
+    var condition
+    if (category == 'all') {
+        condition = {uid}
+    } else {
+        condition = {uid, emotype: category}
+    }
+
     models.EmotionData.findAll({
         attributes: ['downlink', 'emotype'],
-        where: {uid}
+        where: condition,
+        limit: limit,
+        offset: offset
     }).then(data=>{
         res.send(data)
     }).catch(err => {
