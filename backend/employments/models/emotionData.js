@@ -42,6 +42,10 @@ const EmotionData = skima.define('emotionData', {
         type: Sequelize.FLOAT,
         notNull : true
     },
+    fear: {
+        type: Sequelize.FLOAT,
+        notNull : false
+    },
     confi: {
         type: Sequelize.FLOAT,
         notNull : true

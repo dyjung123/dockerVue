@@ -4,7 +4,7 @@ const seque = require('sequelize')
 const addData = async (req, res, next) => {
     // console.log(req.body)
     const {imageName,userId,uploadDate,downloadURL,Confidence,HAPPY,CALM,SAD,
-        DISGUSTED,CONFUSED,ANGRY,SURPRISED,emoType} = req.body
+        DISGUSTED,CONFUSED,ANGRY,SURPRISED,FEAR,emoType} = req.body
     // await -> 동기
     // table이 없으면 table 생성
     await models.EmotionData.sync() // singleton pattern
@@ -12,13 +12,11 @@ const addData = async (req, res, next) => {
     // build & save = create
     const emoData = models.EmotionData.build({UID:userId, imageId:imageName, createDate:uploadDate, 
         happy:HAPPY, sad:SAD, angry:ANGRY, calm:CALM, disgusted:DISGUSTED, surprised:SURPRISED, 
-        confused:CONFUSED, confi:Confidence, downlink: downloadURL, emotype: emoType})
-    await emoData.save().catch((e)=>{ // save commit
-        console.log('error')
-        console.log(e)
-    }).then((r)=>{
-        console.log('then')
-        console.log(r)
+        confused:CONFUSED, fear:FEAR, confi:Confidence, downlink: downloadURL, emotype: emoType})
+    await emoData.save().then(e => {
+        // console.log('then',e)
+    }).catch(e => { // save commit
+        console.log('error', e)
     })
     res.status(201).json({ item: emoData })
 }
@@ -46,7 +44,7 @@ const findRecord = async (req,res,next) => {
         [seque.fn('ROUND', seque.fn('AVG', seque.col('sad')), 1), 'sadavg'],[seque.fn('ROUND', seque.fn('AVG', seque.col('angry')), 1), 'angryavg'],
         [seque.fn('ROUND', seque.fn('AVG', seque.col('calm')), 1), 'calmavg'],[seque.fn('ROUND', seque.fn('AVG', seque.col('disgusted')), 1), 'disgustedavg'],
         [seque.fn('ROUND', seque.fn('AVG', seque.col('surprised')), 1), 'surprisedavg'],[seque.fn('ROUND', seque.fn('AVG', seque.col('confused')), 1), 'confusedavg'],
-        [seque.fn('ROUND', seque.fn('AVG', seque.col('confi')), 1), 'confidenceavg']],
+        [seque.fn('ROUND', seque.fn('AVG', seque.col('fear')), 1), 'fearavg'],[seque.fn('ROUND', seque.fn('AVG', seque.col('confi')), 1), 'confidenceavg']],
         where: {uid,createdAt:{between: [(new Date()).addDays(-term),new Date()]}},
         group: ['createDate']
     }).then(data=>{
@@ -56,7 +54,6 @@ const findRecord = async (req,res,next) => {
 }
 
 const getImage = async (req,res,next) => {
-    console.log('getImage', req.body)
     const {uid, category, limit, offset} = req.body
     var condition
     if (category == 'all') {
